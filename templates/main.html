@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>File upload</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/style.css') }}">
+    <script src="{{ url_for('static', filename='assets/main.js') }}" defer></script>
+</head>
+
+<body>
+    <div class="upload-panel">
+        <h1>UPLOAD FILE</h1>
+        <p>Accepted file types: PNG and PDF. Maximum size: 10 MB.</p>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}<li>{{ message }}</li>{% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+        <form method="post" enctype="multipart/form-data">
+            <div class="upload-container">
+                <input type="file" name="file" accept=".png,.pdf" required>
+                <button type="submit">Upload file</button>
+            </div>
+        </form>
+
+        <h2 class="files-heading">LIST OF UPLOADED FILES</h2>
+
+        {% if files %}
+        <table class="files">
+
+            <thead>
+                <tr>
+                    <th scope="col">File name</th>
+                    <th scope="col">Size</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for file in files %}
+                <tr>
+                    <td><a href="{{ url_for('uploaded_file', filename=file.name) }}">{{ file.name }}</a></td>
+                    <td>{{ file.size }}</td>
+                    <td class="actions">
+                        <form class="delete-form" method="post" action="{{ url_for('delete_file', filename=file.name) }}">
+                            <button class="delete-button" type="submit" aria-label="Delete {{ file.name }}"
+                                title="Delete this File">
+                                <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">
+                                    <path d="M6 7h12m-9 0V5h6v2m-7 0 1 12h6l1-12M10 10v6m4-6v6" />
+                                </svg>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
+</body>
+
+</html>
