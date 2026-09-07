@@ -1,0 +1,26 @@
+# Python generated files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Flask/runtime files
+static/files/*
+!static/files/.gitkeep
+instance/
+*.log
+
+# Local secrets and environment files
+.env
+.env.*
+!.env.example
+
+# IDE and operating-system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
