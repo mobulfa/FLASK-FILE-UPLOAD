@@ -3,6 +3,9 @@ body { font-family: system-ui, sans-serif; max-width: 720px; margin: 3rem auto; 
 .upload-panel h1 { margin-top: 0; }
 .upload-panel p { margin-bottom: 1.25rem; color: #5f6368; }
 .upload-panel form { margin: 0; }
+.settings-form { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; gap: .75rem; align-items: center; margin: 1rem 0 1.5rem !important; }
+.settings-form input { min-width: 0; padding: .55rem; border: 1px solid #dadce0; border-radius: 4px; }
+.browse-button { padding: .55rem 1rem; color: inherit; border: 1px solid #dadce0; border-radius: 4px; background: #f8f9fa; text-decoration: none; }
 h1 { margin-bottom: .4rem; }
 .files-heading { margin: 2.5rem 0 0; padding-bottom: .65rem; border-bottom: 1px solid #dadce0; color: #202124; font-size: 1.25rem; font-weight: 600; letter-spacing: 0; }
 form { display: flex; gap: .75rem; align-items: center; margin: 2rem 0; flex-wrap: wrap; }
@@ -10,6 +13,7 @@ form { display: flex; gap: .75rem; align-items: center; margin: 2rem 0; flex-wra
 button { padding: .55rem 1rem; cursor: pointer; }
 .messages { padding: 0; list-style: none; }
 .messages li { padding: .7rem; margin: .5rem 0; background: #eef6ee; border: 1px solid #b9d8b9; }
+.messages .message-error { background: #fce8e6; border-color: #f2b8b5; color: #b3261e; }
 .files { width: 100%; margin-top: 1rem; border: 1px solid #dadce0; border-collapse: separate; border-spacing: 0; border-radius: 6px; overflow: hidden; text-align: left; }
 .files caption { padding: .8rem 1rem; color: #202124; background: #e8f0fe; font-size: 1.05rem; font-weight: 600; text-align: left; }
 .files th, .files td { padding: .75rem 1rem; border-bottom: 1px solid #dadce0; }
@@ -23,3 +27,4 @@ button { padding: .55rem 1rem; cursor: pointer; }
 .delete-button { display: inline-flex; width: 2.1rem; height: 2.1rem; align-items: center; justify-content: center; padding: 0; color: #b3261e; background: transparent; border: 1px solid #b3261e; border-radius: 4px; }
 .delete-button svg { width: 1.05rem; height: 1.05rem; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.8; }
 .delete-button:hover { color: #fff; background: #b3261e; }
+@media (max-width: 600px) { .settings-form { grid-template-columns: 1fr; } }

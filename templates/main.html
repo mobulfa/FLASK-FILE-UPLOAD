@@ -13,10 +13,18 @@
     <div class="upload-panel">
         <h1>UPLOAD FILE</h1>
         <p>Accepted file types: PNG and PDF. Maximum size: 10 MB.</p>
-        {% with messages = get_flashed_messages() %}
+        <div class="upload-folder">
+            <form class="settings-form" method="post" action="{{ url_for('update_settings') }}">
+                <label for="upload-folder">Save files in:</label>
+                <input id="upload-folder" name="upload_folder" type="text" value="{{ upload_folder }}" required>
+                <a class="browse-button" href="{{ url_for('browse_folder') }}">Browse</a>
+            </form>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
         <ul class="messages">
-            {% for message in messages %}<li>{{ message }}</li>{% endfor %}
+            {% for category, message in messages %}<li class="message-{{ category }}">{{ message }}</li>{% endfor %}
         </ul>
         {% endif %}
         {% endwith %}
@@ -40,12 +48,13 @@
                 </tr>
             </thead>
             <tbody>
-            {% for file in files %}
+                {% for file in files %}
                 <tr>
                     <td><a href="{{ url_for('uploaded_file', filename=file.name) }}">{{ file.name }}</a></td>
                     <td>{{ file.size }}</td>
                     <td class="actions">
-                        <form class="delete-form" method="post" action="{{ url_for('delete_file', filename=file.name) }}">
+                        <form class="delete-form" method="post"
+                            action="{{ url_for('delete_file', filename=file.name) }}">
                             <button class="delete-button" type="submit" aria-label="Delete {{ file.name }}"
                                 title="Delete this File">
                                 <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">
@@ -55,7 +64,7 @@
                         </form>
                     </td>
                 </tr>
-            {% endfor %}
+                {% endfor %}
             </tbody>
         </table>
         {% endif %}
