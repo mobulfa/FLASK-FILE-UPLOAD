@@ -1,6 +1,7 @@
 body { font-family: system-ui, sans-serif; max-width: 720px; margin: 3rem auto; padding: 0 1rem; color: #202124; }
 .upload-panel { margin-bottom: 2.5rem; padding: 1.5rem; border: 1px solid #dadce0; border-radius: 8px; background: #fff; box-shadow: 0 2px 8px rgba(60, 64, 67, .08); }
 .upload-panel h1 { margin-top: 0; }
+.upload-panel h1, .upload-panel > p { text-align: center; }
 .upload-panel p { margin-bottom: 1.25rem; color: #5f6368; }
 .upload-panel form { margin: 0; }
 .settings-form { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; gap: .75rem; align-items: center; margin: 1rem 0 1.5rem !important; }
@@ -11,9 +12,11 @@ h1 { margin-bottom: .4rem; }
 form { display: flex; gap: .75rem; align-items: center; margin: 2rem 0; flex-wrap: wrap; }
 .upload-container { display: flex; gap: .75rem; align-items: center; padding: 1rem; border: 1px solid #dadce0; border-radius: 6px; background: #f8f9fa; }
 button { padding: .55rem 1rem; cursor: pointer; }
-.messages { padding: 0; list-style: none; }
-.messages li { padding: .7rem; margin: .5rem 0; background: #eef6ee; border: 1px solid #b9d8b9; }
-.messages .message-error { background: #fce8e6; border-color: #f2b8b5; color: #b3261e; }
+.flash-messages { position: fixed; z-index: 10; top: 1rem; right: 1rem; width: min(360px, calc(100% - 2rem)); }
+.flash-message { display: flex; gap: .75rem; align-items: flex-start; justify-content: space-between; padding: .75rem 1rem; color: #1e4620; background: #eef6ee; border: 1px solid #b9d8b9; border-radius: 6px; box-shadow: 0 4px 12px rgba(60, 64, 67, .12); opacity: 0; transform: translateY(-.5rem); transition: opacity .2s ease, transform .2s ease; }
+.flash-message.is-visible { opacity: 1; transform: translateY(0); }
+.flash-message.message-error { color: #b3261e; background: #fce8e6; border-color: #f2b8b5; }
+.flash-close { padding: 0; color: currentColor; background: transparent; border: 0; font-size: 1.1rem; line-height: 1; }
 .files { width: 100%; margin-top: 1rem; border: 1px solid #dadce0; border-collapse: separate; border-spacing: 0; border-radius: 6px; overflow: hidden; text-align: left; }
 .files caption { padding: .8rem 1rem; color: #202124; background: #e8f0fe; font-size: 1.05rem; font-weight: 600; text-align: left; }
 .files th, .files td { padding: .75rem 1rem; border-bottom: 1px solid #dadce0; }
