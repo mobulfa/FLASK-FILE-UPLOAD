@@ -7,7 +7,7 @@ import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 
-from flask import Flask, flash, jsonify, redirect, render_template, request, send_from_directory, url_for
+from flask import Flask, flash, redirect, render_template, request, send_from_directory, url_for
 from werkzeug.exceptions import RequestEntityTooLarge
 from werkzeug.utils import secure_filename
 
@@ -171,6 +171,9 @@ def create_app() -> Flask:
         UPLOAD_FOLDER=str(DEFAULT_UPLOAD_FOLDER),
         UPLOAD_FOLDER_ERROR=None,
     )
+    from .api import api
+
+    app.register_blueprint(api)
     try:
         validate_upload_folder(DEFAULT_UPLOAD_FOLDER)
     except RuntimeError as error:
@@ -247,63 +250,6 @@ def create_app() -> Flask:
         app.config["UPLOAD_FOLDER_ERROR"] = None
         flash(f"Files will now be saved in {upload_folder}.")
         return redirect(url_for("index"))
-
-    @app.get("/api/v1/files")
-    def api_list_files():
-        upload_folder_error = app.config["UPLOAD_FOLDER_ERROR"]
-        if upload_folder_error:
-            return jsonify(error=upload_folder_error), 503
-
-        return jsonify(files=list_uploaded_files(Path(app.config["UPLOAD_FOLDER"])))
-
-    @app.post("/api/v1/files")
-    def api_upload_file():
-        upload_folder_error = app.config["UPLOAD_FOLDER_ERROR"]
-        if upload_folder_error:
-            return jsonify(error=upload_folder_error), 503
-
-        uploaded = request.files.get("file")
-        if uploaded is None or not uploaded.filename:
-            return jsonify(error="Please provide a file in the 'file' field."), 400
-
-        filename = secure_filename(uploaded.filename)
-        if not filename or not allowed_file(filename):
-            return jsonify(error="Only PNG and PDF files are allowed."), 400
-
-        if not has_valid_file_signature(uploaded, filename):
-            return jsonify(error="The file content does not match its extension."), 400
-
-        destination = Path(app.config["UPLOAD_FOLDER"]) / filename
-        if destination.exists():
-            return jsonify(error="This file already exists."), 409
-
-        uploaded.save(destination)
-        record_file_event("Uploaded", filename)
-        return jsonify(
-            message="File uploaded successfully.",
-            file={"name": filename, "size": format_file_size(destination.stat().st_size)},
-        ), 201
-
-    @app.get("/api/v1/history")
-    def api_file_history():
-        return jsonify(history=load_file_history())
-
-    @app.route("/api/v1/files/<path:filename>", methods=["GET", "DELETE"])
-    def api_file(filename: str):
-        safe_filename = secure_filename(filename)
-        if not safe_filename or safe_filename != filename or not allowed_file(safe_filename):
-            return jsonify(error="Invalid file name."), 400
-
-        file_path = Path(app.config["UPLOAD_FOLDER"]) / safe_filename
-        if not file_path.is_file():
-            return jsonify(error="File not found."), 404
-
-        if request.method == "GET":
-            return send_from_directory(app.config["UPLOAD_FOLDER"], safe_filename)
-
-        file_path.unlink()
-        record_file_event("Deleted", safe_filename)
-        return jsonify(message="File deleted successfully.", filename=safe_filename)
 
     @app.route("/", methods=["GET", "POST"])
     def index():

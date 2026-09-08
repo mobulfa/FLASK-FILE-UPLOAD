@@ -25,7 +25,8 @@ FLASK-FILE-UPLOAD/
 ├── app.py                    # Application entry point
 ├── module/
 │   ├── __init__.py
-│   └── main.py               # Flask app, routes, and upload logic
+│   ├── api.py                # Versioned REST API routes
+│   └── main.py               # Flask app, browser routes, and upload logic
 ├── templates/
 │   └── main.html             # Upload page and file table
 ├── static/
