@@ -56,76 +56,61 @@ document.addEventListener("DOMContentLoaded", () => {
 		showToast("Please choose a file to upload.");
 	}, true);
 
-	const loadConfirmationDialog = async () => {
-		const response = await fetch(`${window.location.origin}/confirmation-dialog`);
-		if (!response.ok) {
-			throw new Error("Could not load the confirmation dialog.");
-		}
+	const confirmationModal = document.createElement("div");
+	confirmationModal.className = "confirmation-modal";
+	confirmationModal.setAttribute("aria-hidden", "true");
+	confirmationModal.innerHTML = `
+		<div class="confirmation-backdrop"></div>
+		<section class="confirmation-dialog" role="dialog" aria-modal="true" aria-labelledby="confirmation-title">
+			<h2 id="confirmation-title">Delete file?</h2>
+			<p class="confirmation-message"></p>
+			<div class="confirmation-actions">
+				<button class="confirmation-cancel" type="button">Cancel</button>
+				<button class="confirmation-delete" type="button">Delete</button>
+			</div>
+		</section>`;
+	document.body.append(confirmationModal);
 
-		document.body.insertAdjacentHTML("beforeend", await response.text());
-		const confirmationModal = document.querySelector("#confirmation-modal");
-		if (!confirmationModal) {
-			throw new Error("Confirmation dialog markup is missing.");
-		}
-		const confirmationMessage = confirmationModal.querySelector(".confirmation-message");
-		const cancelConfirmation = confirmationModal.querySelector(".confirmation-cancel");
-		const deleteConfirmation = confirmationModal.querySelector(".confirmation-delete");
-		let activeDeleteForm;
-		let lastFocusedElement;
+	const confirmationMessage = confirmationModal.querySelector(".confirmation-message");
+	const cancelConfirmation = confirmationModal.querySelector(".confirmation-cancel");
+	const deleteConfirmation = confirmationModal.querySelector(".confirmation-delete");
+	let activeDeleteForm;
+	let lastFocusedElement;
 
-		const closeConfirmation = () => {
-			confirmationModal.classList.remove("is-visible");
-			confirmationModal.setAttribute("aria-hidden", "true");
-			activeDeleteForm = null;
-			lastFocusedElement?.focus();
-		};
-
-		const openConfirmation = (form, filename) => {
-			activeDeleteForm = form;
-			lastFocusedElement = document.activeElement;
-			confirmationMessage.textContent = `Are you sure you want to delete ${filename}?`;
-			confirmationModal.classList.add("is-visible");
-			confirmationModal.setAttribute("aria-hidden", "false");
-			cancelConfirmation.focus();
-		};
-
-		cancelConfirmation.addEventListener("click", closeConfirmation);
-		confirmationModal.querySelector(".confirmation-backdrop").addEventListener("click", closeConfirmation);
-		deleteConfirmation.addEventListener("click", () => {
-			activeDeleteForm?.submit();
-		});
-		document.addEventListener("keydown", (event) => {
-			if (event.key === "Escape" && confirmationModal.classList.contains("is-visible")) {
-				closeConfirmation();
-			}
-		});
-
-		document.querySelectorAll(".delete-form").forEach((form) => {
-			form.addEventListener("submit", (event) => {
-				const filename = form.querySelector(".delete-button")?.getAttribute("aria-label")
-					?.replace(/^Delete\s+/i, "") || "this file";
-
-				event.preventDefault();
-				openConfirmation(form, filename);
-			});
-		});
+	const closeConfirmation = () => {
+		confirmationModal.classList.remove("is-visible");
+		confirmationModal.setAttribute("aria-hidden", "true");
+		activeDeleteForm = null;
+		lastFocusedElement?.focus();
 	};
 
-	const attachFallbackDeleteConfirmation = () => {
-		document.querySelectorAll(".delete-form").forEach((form) => {
-			form.addEventListener("submit", (event) => {
-				const filename = form.querySelector(".delete-button")?.getAttribute("aria-label")
-					?.replace(/^Delete\s+/i, "") || "this file";
-
-				if (!window.confirm(`Are you sure you want to delete ${filename}?`)) {
-					event.preventDefault();
-				}
-			});
-		});
+	const openConfirmation = (form, filename) => {
+		activeDeleteForm = form;
+		lastFocusedElement = document.activeElement;
+		confirmationMessage.textContent = `Are you sure you want to delete ${filename}?`;
+		confirmationModal.classList.add("is-visible");
+		confirmationModal.setAttribute("aria-hidden", "false");
+		cancelConfirmation.focus();
 	};
 
-	loadConfirmationDialog().catch((error) => {
-		console.error("Confirmation dialog could not be loaded:", error);
-		attachFallbackDeleteConfirmation();
+	cancelConfirmation.addEventListener("click", closeConfirmation);
+	confirmationModal.querySelector(".confirmation-backdrop").addEventListener("click", closeConfirmation);
+	deleteConfirmation.addEventListener("click", () => {
+		activeDeleteForm?.submit();
+	});
+	document.addEventListener("keydown", (event) => {
+		if (event.key === "Escape" && confirmationModal.classList.contains("is-visible")) {
+			closeConfirmation();
+		}
+	});
+
+	document.querySelectorAll(".delete-form").forEach((form) => {
+		form.addEventListener("submit", (event) => {
+			const filename = form.querySelector(".delete-button")?.getAttribute("aria-label")
+				?.replace(/^Delete\s+/i, "") || "this file";
+
+			event.preventDefault();
+			openConfirmation(form, filename);
+		});
 	});
 });
