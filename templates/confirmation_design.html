@@ -1,0 +1,13 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/style.css') }}">
+
+<div class="confirmation-modal" id="confirmation-modal" aria-hidden="true">
+    <div class="confirmation-backdrop"></div>
+    <section class="confirmation-dialog" role="dialog" aria-modal="true" aria-labelledby="confirmation-title">
+        <h2 id="confirmation-title">Delete file?</h2>
+        <p class="confirmation-message"></p>
+        <div class="confirmation-actions">
+            <button class="confirmation-cancel" type="button">Cancel</button>
+            <button class="confirmation-delete" type="button">Delete</button>
+        </div>
+    </section>
+</div>

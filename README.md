@@ -87,5 +87,27 @@ If `file_history.json` exists when the application starts and the SQLite table
 is empty, its records are imported once. Both local history files are ignored
 by Git.
 
+## REST API
+
+The application also provides versioned JSON endpoints under `/api/v1`:
+
+| Method | Endpoint | Purpose |
+| --- | --- | --- |
+| `GET` | `/api/v1/files` | List uploaded PNG and PDF files |
+| `POST` | `/api/v1/files` | Upload a file using the multipart field `file` |
+| `GET` | `/api/v1/files/<filename>` | Download a file |
+| `DELETE` | `/api/v1/files/<filename>` | Delete a file |
+| `GET` | `/api/v1/history` | Read upload and delete history as JSON |
+
+Example upload using PowerShell:
+
+```powershell
+Invoke-RestMethod -Uri http://127.0.0.1:8005/api/v1/files -Method Post -Form @{
+	file = Get-Item .\example.pdf
+}
+```
+
+The existing browser routes remain available for the HTML interface.
+
 The current application is intended for local development. Use a production
 WSGI server and additional security scanning before deploying it publicly.
