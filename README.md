@@ -15,6 +15,7 @@ file name, size, download link, and delete action.
 - Download uploaded files by selecting their file name.
 - Delete uploaded files with an icon action button.
 - Show validation and upload status messages in the page.
+- Record successful uploads and deletions in a SQLite database.
 - Serve CSS and JavaScript from the `static/assets` folder.
 
 ## Project Structure
@@ -31,7 +32,9 @@ FLASK-FILE-UPLOAD/
 │   ├── assets/
 │   │   ├── main.js
 │   │   └── style.css
-│   └── files/                # Uploaded files
+├── files/                    # Default uploaded files folder
+├── file_history.db           # Local SQLite history database (created at startup)
+├── file_history.json         # Legacy history file used for one-time migration
 ├── requirements.txt
 └── README.md
 ```
@@ -72,6 +75,17 @@ Set `FLASK_SECRET_KEY` to replace the development secret key used by Flask:
 ```powershell
 $env:FLASK_SECRET_KEY = "your-secret-key"
 ```
+
+## SQLite History Database
+
+The application uses SQLite to record successful upload and delete actions.
+The database is created automatically in the project root as `file_history.db`.
+Its `file_history` table stores the action, filename, timestamp, and computer
+name for each event.
+
+If `file_history.json` exists when the application starts and the SQLite table
+is empty, its records are imported once. Both local history files are ignored
+by Git.
 
 The current application is intended for local development. Use a production
 WSGI server and additional security scanning before deploying it publicly.
