@@ -85,17 +85,18 @@ def initialize_history_database() -> None:
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 action TEXT NOT NULL,
                 filename TEXT NOT NULL,
-                timestamp TEXT NOT NULL
+                timestamp TEXT NOT NULL,
+                computer_name TEXT NOT NULL DEFAULT 'Unknown'
             )
             """
         )
         columns = {
             row[1] for row in connection.execute("PRAGMA table_info(file_history)")
         }
-        if "computer_name" not in columns:
-            connection.execute(
-                "ALTER TABLE file_history ADD COLUMN computer_name TEXT NOT NULL DEFAULT 'Unknown'"
-            )
+      #  if "computer_name" not in columns:
+      #      connection.execute(
+      #          "ALTER TABLE file_history ADD COLUMN computer_name TEXT NOT NULL DEFAULT 'Unknown'"
+      #      )
 
         if LEGACY_HISTORY_FILE.exists():
             has_records = connection.execute(
