@@ -11,6 +11,8 @@ env/
 # Flask/runtime files
 static/files/*
 !static/files/.gitkeep
+file_history.db
+file_history.json
 instance/
 *.log
 

@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 import os
+import socket
+import sqlite3
 import subprocess
+from datetime import datetime, timezone
 from pathlib import Path
 
 from flask import Flask, flash, redirect, render_template, request, send_from_directory, url_for
@@ -11,6 +14,9 @@ from werkzeug.utils import secure_filename
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 DEFAULT_UPLOAD_FOLDER = BASE_DIR / "files"
+HISTORY_DATABASE = BASE_DIR / "file_history.db"
+LEGACY_HISTORY_FILE = BASE_DIR / "file_history.json"
+COMPUTER_NAME = socket.gethostname()
 #DEFAULT_UPLOAD_FOLDER = Path(r"Z:\IT Department\Manuelito\files")
 ALLOWED_EXTENSIONS = {"pdf", "png"}
 MAX_UPLOAD_SIZE = 10 * 1024 * 1024
@@ -70,7 +76,84 @@ def list_uploaded_files(upload_folder: Path) -> list[dict[str, str]]:
     return files
 
 
+def initialize_history_database() -> None:
+    """Create the history table and import legacy JSON records once."""
+    with sqlite3.connect(HISTORY_DATABASE) as connection:
+        connection.execute(
+            """
+            CREATE TABLE IF NOT EXISTS file_history (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                action TEXT NOT NULL,
+                filename TEXT NOT NULL,
+                timestamp TEXT NOT NULL
+            )
+            """
+        )
+        columns = {
+            row[1] for row in connection.execute("PRAGMA table_info(file_history)")
+        }
+        if "computer_name" not in columns:
+            connection.execute(
+                "ALTER TABLE file_history ADD COLUMN computer_name TEXT NOT NULL DEFAULT 'Unknown'"
+            )
+
+        if LEGACY_HISTORY_FILE.exists():
+            has_records = connection.execute(
+                "SELECT 1 FROM file_history LIMIT 1"
+            ).fetchone()
+            if not has_records:
+                try:
+                    import json
+
+                    legacy_history = json.loads(
+                        LEGACY_HISTORY_FILE.read_text(encoding="utf-8")
+                    )
+                except (OSError, json.JSONDecodeError):
+                    legacy_history = []
+
+                connection.executemany(
+                    "INSERT INTO file_history (action, filename, timestamp, computer_name) VALUES (?, ?, ?, ?)",
+                    [
+                        (event["action"], event["filename"], event["timestamp"], "Unknown")
+                        for event in legacy_history
+                        if all(key in event for key in ("action", "filename", "timestamp"))
+                    ],
+                )
+
+
+def load_file_history() -> list[dict[str, str]]:
+    """Load file activity history with newest events first."""
+    with sqlite3.connect(HISTORY_DATABASE) as connection:
+        rows = connection.execute(
+            "SELECT action, filename, timestamp, computer_name FROM file_history ORDER BY id DESC"
+        ).fetchall()
+    return [
+        {
+            "action": action,
+            "filename": filename,
+            "timestamp": timestamp,
+            "computer_name": computer_name,
+        }
+        for action, filename, timestamp, computer_name in rows
+    ]
+
+
+def record_file_event(action: str, filename: str) -> None:
+    """Record a successful upload or delete event."""
+    with sqlite3.connect(HISTORY_DATABASE) as connection:
+        connection.execute(
+            "INSERT INTO file_history (action, filename, timestamp, computer_name) VALUES (?, ?, ?, ?)",
+            (
+                action,
+                filename,
+                datetime.now(timezone.utc).isoformat(timespec="seconds"),
+                COMPUTER_NAME,
+            ),
+        )
+
+
 def create_app() -> Flask:
+    initialize_history_database()
     app = Flask(
         __name__,
         template_folder=str(BASE_DIR / "templates"),
@@ -186,6 +269,7 @@ def create_app() -> Flask:
                 return redirect(url_for("index"))
 
             uploaded.save(destination)
+            record_file_event("Uploaded", filename)
             flash(f"{filename} uploaded successfully.")
             return redirect(url_for("index"))
 
@@ -193,9 +277,10 @@ def create_app() -> Flask:
             "main.html",
             files=list_uploaded_files(upload_folder),
             upload_folder=app.config["UPLOAD_FOLDER"],
+            history=list(reversed(load_file_history())),
         )
 
-    @app.route("/files/<path:filename>")
+    @app.route("/f/<path:filename>")
     def uploaded_file(filename: str):
         return send_from_directory(app.config["UPLOAD_FOLDER"], filename)
 
@@ -212,6 +297,7 @@ def create_app() -> Flask:
             return redirect(url_for("index"))
 
         file_path.unlink()
+        record_file_event("Deleted", safe_filename)
         flash(f"{safe_filename} deleted successfully.")
         return redirect(url_for("index"))
 

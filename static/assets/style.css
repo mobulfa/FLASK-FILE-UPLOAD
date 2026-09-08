@@ -1,33 +1,269 @@
-body { font-family: system-ui, sans-serif; max-width: 720px; margin: 3rem auto; padding: 0 1rem; color: #202124; }
-.upload-panel { margin-bottom: 2.5rem; padding: 1.5rem; border: 1px solid #dadce0; border-radius: 8px; background: #fff; box-shadow: 0 2px 8px rgba(60, 64, 67, .08); }
-.upload-panel h1 { margin-top: 0; }
-.upload-panel h1, .upload-panel > p { text-align: center; }
-.upload-panel p { margin-bottom: 1.25rem; color: #5f6368; }
-.upload-panel form { margin: 0; }
-.settings-form { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; gap: .75rem; align-items: center; margin: 1rem 0 1.5rem !important; }
-.settings-form input { min-width: 0; padding: .55rem; border: 1px solid #dadce0; border-radius: 4px; }
-.browse-button { padding: .55rem 1rem; color: inherit; border: 1px solid #dadce0; border-radius: 4px; background: #f8f9fa; text-decoration: none; }
-h1 { margin-bottom: .4rem; }
-.files-heading { margin: 2.5rem 0 0; padding-bottom: .65rem; border-bottom: 1px solid #dadce0; color: #202124; font-size: 1.25rem; font-weight: 600; letter-spacing: 0; }
-form { display: flex; gap: .75rem; align-items: center; margin: 2rem 0; flex-wrap: wrap; }
-.upload-container { display: flex; gap: .75rem; align-items: center; padding: 1rem; border: 1px solid #dadce0; border-radius: 6px; background: #f8f9fa; }
-button { padding: .55rem 1rem; cursor: pointer; }
-.flash-messages { position: fixed; z-index: 10; top: 1rem; right: 1rem; width: min(360px, calc(100% - 2rem)); }
-.flash-message { display: flex; gap: .75rem; align-items: flex-start; justify-content: space-between; padding: .75rem 1rem; color: #1e4620; background: #eef6ee; border: 1px solid #b9d8b9; border-radius: 6px; box-shadow: 0 4px 12px rgba(60, 64, 67, .12); opacity: 0; transform: translateY(-.5rem); transition: opacity .2s ease, transform .2s ease; }
-.flash-message.is-visible { opacity: 1; transform: translateY(0); }
-.flash-message.message-error { color: #b3261e; background: #fce8e6; border-color: #f2b8b5; }
-.flash-close { padding: 0; color: currentColor; background: transparent; border: 0; font-size: 1.1rem; line-height: 1; }
-.files { width: 100%; margin-top: 1rem; border: 1px solid #dadce0; border-collapse: separate; border-spacing: 0; border-radius: 6px; overflow: hidden; text-align: left; }
-.files caption { padding: .8rem 1rem; color: #202124; background: #e8f0fe; font-size: 1.05rem; font-weight: 600; text-align: left; }
-.files th, .files td { padding: .75rem 1rem; border-bottom: 1px solid #dadce0; }
-.files th { background: #f1f3f4; font-weight: 600; }
-.files tbody tr:nth-child(even) { background: #fafafa; }
-.files tbody tr:hover { background: #f0f7ff; }
-.files tbody tr:last-child td { border-bottom: 0; }
-.files a { color: inherit; text-decoration: none; }
-.files th:last-child, .files td:last-child { text-align: right; white-space: nowrap; }
-.delete-form { display: inline; margin: 0; }
-.delete-button { display: inline-flex; width: 2.1rem; height: 2.1rem; align-items: center; justify-content: center; padding: 0; color: #b3261e; background: transparent; border: 1px solid #b3261e; border-radius: 4px; }
-.delete-button svg { width: 1.05rem; height: 1.05rem; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.8; }
-.delete-button:hover { color: #fff; background: #b3261e; }
-@media (max-width: 600px) { .settings-form { grid-template-columns: 1fr; } }
+body {
+    font-family: system-ui, sans-serif;
+    max-width: 720px;
+    margin: 3rem auto;
+    padding: 0 1rem;
+    color: #202124;
+}
+
+.upload-panel {
+    margin-bottom: 2.5rem;
+    padding: 1.5rem;
+    border: 1px solid #dadce0;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(60, 64, 67, .08);
+}
+
+.upload-panel h1 {
+    margin-top: 0;
+}
+
+.upload-panel h1,
+.upload-panel>p {
+    text-align: center;
+}
+
+.upload-panel p {
+    margin-bottom: 1.25rem;
+    color: #5f6368;
+}
+
+.upload-panel form {
+    margin: 0;
+}
+
+.settings-form {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto auto;
+    gap: .75rem;
+    align-items: center;
+    margin: 1rem 0 1.5rem !important;
+}
+
+.settings-form input {
+    min-width: 0;
+    overflow: hidden;
+    padding: .55rem;
+    border: 1px solid #dadce0;
+    border-radius: 4px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.browse-button {
+    padding: .55rem 1rem;
+    color: inherit;
+    border: 1px solid #dadce0;
+    border-radius: 4px;
+    background: #f8f9fa;
+    text-decoration: none;
+}
+
+h1 {
+    margin-bottom: .4rem;
+}
+
+.files-heading {
+    margin: 2.5rem 0 0;
+    padding-bottom: .65rem;
+    border-bottom: 1px solid #dadce0;
+    color: #202124;
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: 0;
+}
+
+form {
+    display: flex;
+    gap: .75rem;
+    align-items: center;
+    margin: 2rem 0;
+    flex-wrap: wrap;
+}
+
+.upload-container {
+    display: flex;
+    gap: .75rem;
+    align-items: center;
+    padding: 1rem;
+    border: 1px solid #dadce0;
+    border-radius: 6px;
+    background: #f8f9fa;
+}
+
+button {
+    padding: .55rem 1rem;
+    cursor: pointer;
+}
+
+.flash-messages {
+    position: fixed;
+    z-index: 10;
+    top: 1rem;
+    right: 1rem;
+    width: min(360px, calc(100% - 2rem));
+}
+
+.flash-message {
+    display: flex;
+    gap: .75rem;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: .75rem 1rem;
+    color: #1e4620;
+    background: #eef6ee;
+    border: 1px solid #b9d8b9;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(60, 64, 67, .12);
+    opacity: 0;
+    transform: translateY(-.5rem);
+    transition: opacity .2s ease, transform .2s ease;
+}
+
+.flash-message.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.flash-message.message-error {
+    color: #b3261e;
+    background: #fce8e6;
+    border-color: #f2b8b5;
+}
+
+.flash-close {
+    padding: 0;
+    color: currentColor;
+    background: transparent;
+    border: 0;
+    font-size: 1.1rem;
+    line-height: 1;
+}
+
+.files {
+    width: 100%;
+    margin-top: 1rem;
+    border: 1px solid #dadce0;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 6px;
+    overflow: hidden;
+    text-align: left;
+}
+
+.files caption {
+    padding: .8rem 1rem;
+    color: #202124;
+    background: #e8f0fe;
+    font-size: 1.05rem;
+    font-weight: 600;
+    text-align: left;
+}
+
+.files th,
+.files td {
+    padding: .75rem 1rem;
+    border-bottom: 1px solid #dadce0;
+}
+
+.files th {
+    background: #f1f3f4;
+    font-weight: 600;
+}
+
+.files tbody tr:nth-child(even) {
+    background: #fafafa;
+}
+
+.files tbody tr:hover {
+    background: #f0f7ff;
+}
+
+.history {
+    width: 100%;
+    margin-top: 1rem;
+    border: 1px solid #dadce0;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 6px;
+    overflow: hidden;
+    text-align: left;
+}
+
+.history th,
+.history td {
+    padding: .75rem 1rem;
+    border-bottom: 1px solid #dadce0;
+}
+
+.history th {
+    background: #f1f3f4;
+    font-weight: 600;
+}
+
+.history tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.history-uploaded {
+    color: #1e4620;
+}
+
+.history-deleted {
+    color: #b3261e;
+}
+
+.files tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.files a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.files th:last-child,
+.files td:last-child {
+    text-align: right;
+    white-space: nowrap;
+}
+
+.delete-form {
+    display: inline;
+    margin: 0;
+}
+
+.delete-button {
+    display: inline-flex;
+    width: 2.1rem;
+    height: 2.1rem;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    color: #b3261e;
+    background: transparent;
+    border: 1px solid #b3261e;
+    border-radius: 4px;
+}
+
+.delete-button svg {
+    width: 1.05rem;
+    height: 1.05rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.8;
+}
+
+.delete-button:hover {
+    color: #fff;
+    background: #b3261e;
+}
+
+@media (max-width: 600px) {
+    .settings-form {
+        grid-template-columns: 1fr;
+    }
+}

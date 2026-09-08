@@ -28,7 +28,7 @@
         <div class="upload-folder">
             <form class="settings-form" method="post" action="{{ url_for('update_settings') }}">
                 <label for="upload-folder">Save files in:</label>
-                <input id="upload-folder" name="upload_folder" type="text" value="{{ upload_folder }}" readonly>
+                <input id="upload-folder" name="upload_folder" type="text" value="{{ upload_folder }}" title="{{ upload_folder }}" readonly>
                 <a class="browse-button" href="{{ url_for('browse_folder') }}">Browse</a>
             </form>
         </div>
@@ -73,6 +73,28 @@
             </tbody>
         </table>
         {% endif %}
+
+        {# {% if history %}
+        <h2 class="files-heading">FILE HISTORY</h2>
+        <table class="history">
+            <thead>
+                <tr>
+                    <th scope="col">Action</th>
+                    <th scope="col">File name</th>
+                    <th scope="col">Date and time</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for event in history %}
+                <tr>
+                    <td class="history-{{ event.action|lower }}">{{ event.action }}</td>
+                    <td>{{ event.filename }}</td>
+                    <td>{{ event.timestamp }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %} #}
     </div>
 </body>
 
