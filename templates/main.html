@@ -10,6 +10,15 @@
 </head>
 
 <body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a class="navbar-brand" href="{{ url_for('index') }}">File Upload</a>
+            <ul class="navbar-nav">
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('browse_folder') }}">Browse Folder</a></li>
+            </ul>
+        </div>
+    </nav>
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
     <div class="flash-messages" id="flash-messages" aria-live="polite">

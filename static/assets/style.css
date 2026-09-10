@@ -5,6 +5,47 @@ body {
     padding: 0 1rem;
     color: #202124;
 }
+nav.navbar {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dadce0;
+    padding: 0.5rem 1rem;
+    margin-bottom: 2rem;
+}
+nav.navbar .navbar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+nav.navbar .navbar-brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #202124;
+    text-decoration: none;
+}
+nav.navbar .navbar-nav {
+    list-style: none;
+    display: flex;
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+}
+nav.navbar .navbar-nav .nav-item .nav-link {
+    color: #202124;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+}
+nav.navbar .navbar-nav .nav-item .nav-link:hover {
+    background-color: #e8f0fe;
+}
+nav.navbar .navbar-nav .nav-item .nav-link.active {
+    background-color: #e8f0fe;
+    font-weight: bold;
+}
+nav.navbar .navbar-nav .nav-item .nav-link:focus {
+    outline: 2px solid #4285f4;
+    outline-offset: 2px;
+}
 
 .upload-panel {
     margin-bottom: 2.5rem;
