@@ -18,27 +18,6 @@ file name, size, download link, and delete action.
 - Record successful uploads and deletions in a SQLite database.
 - Serve CSS and JavaScript from the `static/assets` folder.
 
-## Project Structure
-
-```text
-FLASK-FILE-UPLOAD/
-├── app.py                    # Application entry point
-├── module/
-│   ├── __init__.py
-│   ├── api.py                # Versioned REST API routes
-│   └── main.py               # Flask app, browser routes, and upload logic
-├── templates/
-│   └── main.html             # Upload page and file table
-├── static/
-│   ├── assets/
-│   │   ├── main.js
-│   │   └── style.css
-├── files/                    # Default uploaded files folder
-├── file_history.db           # Local SQLite history database (created at startup)
-├── file_history.json         # Legacy history file used for one-time migration
-├── requirements.txt
-└── README.md
-```
 
 ## Setup
 
