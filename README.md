@@ -34,9 +34,7 @@ FLASK-FILE-UPLOAD/
 │   │   ├── main.js
 │   │   └── style.css
 ├── files/                    # Default uploaded files folder
-├── SQLite_Database/
-│   ├── delete_query.sql      # SQL queries for the history database
-│   └── file_history.db       # Local SQLite history database (created at startup)
+├── file_history.db           # Local SQLite history database (created at startup)
 ├── file_history.json         # Legacy history file used for one-time migration
 ├── requirements.txt
 └── README.md
