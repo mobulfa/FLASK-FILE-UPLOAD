@@ -43,9 +43,18 @@
         </div>
 
         <form id="upload-form" method="post" enctype="multipart/form-data">
-            <div class="upload-container">
-                <input type="file" name="file" accept=".png,.pdf" required>
-                <button type="submit">Upload file</button>
+            <div class="upload-container" id="drop-zone">
+                <input id="upload-file" type="file" name="file" accept=".png,.pdf" required>
+                <label class="drop-zone-label" for="upload-file">
+                    <strong>Drop a PNG or PDF file here</strong>
+                    <span id="selected-file">or click to choose a file</span>
+                </label>
+                <button class="upload-submit" type="submit">
+                    <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">
+                        <path d="M12 16V4m0 0L7 9m5-5 5 5M5 15v4h14v-4" />
+                    </svg>
+                    <span>Upload file</span>
+                </button>
             </div>
         </form>
 
@@ -56,6 +65,7 @@
 
             <thead>
                 <tr>
+                    <th scope="col">Preview</th>
                     <th scope="col">File name</th>
                     <th scope="col">Size</th>
                     <th scope="col">Actions</th>
@@ -64,6 +74,17 @@
             <tbody>
                 {% for file in files %}
                 <tr>
+                    <td class="preview-cell">
+                        {% if file.name.rsplit('.', 1)[1]|lower == 'png' %}
+                        <img class="file-preview-image"
+                            src="{{ url_for('uploaded_file', filename=file.name) }}"
+                            alt="Preview of {{ file.name }}">
+                        {% else %}
+                        <iframe class="file-preview-pdf"
+                            src="{{ url_for('uploaded_file', filename=file.name) }}"
+                            title="Preview of {{ file.name }}"></iframe>
+                        {% endif %}
+                    </td>
                     <td><a href="{{ url_for('uploaded_file', filename=file.name) }}">{{ file.name }}</a></td>
                     <td>{{ file.size }}</td>
                     <td class="actions">

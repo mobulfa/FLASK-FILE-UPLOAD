@@ -34,7 +34,9 @@ FLASK-FILE-UPLOAD/
 │   │   ├── main.js
 │   │   └── style.css
 ├── files/                    # Default uploaded files folder
-├── file_history.db           # Local SQLite history database (created at startup)
+├── SQLite_Database/
+│   ├── delete_query.sql      # SQL queries for the history database
+│   └── file_history.db       # Local SQLite history database (created at startup)
 ├── file_history.json         # Legacy history file used for one-time migration
 ├── requirements.txt
 └── README.md
@@ -80,7 +82,8 @@ $env:FLASK_SECRET_KEY = "your-secret-key"
 ## SQLite History Database
 
 The application uses SQLite to record successful upload and delete actions.
-The database is created automatically in the project root as `file_history.db`.
+The database is created automatically at `SQLite_Database/file_history.db`.
+The `SQLite_Database` folder also contains SQL queries for the history database.
 Its `file_history` table stores the action, filename, timestamp, and computer
 name for each event.
 

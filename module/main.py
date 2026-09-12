@@ -14,7 +14,8 @@ from werkzeug.utils import secure_filename
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 DEFAULT_UPLOAD_FOLDER = BASE_DIR / "files"
-HISTORY_DATABASE = BASE_DIR / "file_history.db"
+SQLITE_DATABASE_DIR = BASE_DIR / "SQLite_Database"
+HISTORY_DATABASE = SQLITE_DATABASE_DIR / "file_history.db"
 LEGACY_HISTORY_FILE = BASE_DIR / "file_history.json"
 COMPUTER_NAME = socket.gethostname()
 #DEFAULT_UPLOAD_FOLDER = Path(r"Z:\IT Department\Manuelito\files")

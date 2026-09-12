@@ -50,11 +50,41 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	const uploadForm = document.querySelector("#upload-form");
 	const fileInput = uploadForm?.querySelector('input[type="file"]');
+	const dropZone = document.querySelector("#drop-zone");
+	const selectedFile = document.querySelector("#selected-file");
+	const uploadSubmit = uploadForm?.querySelector(".upload-submit");
+
+	const updateSelectedFile = () => {
+		selectedFile.textContent = fileInput.files[0]?.name || "or click to choose a file";
+	};
+
+	fileInput?.addEventListener("change", updateSelectedFile);
+	dropZone?.addEventListener("dragover", (event) => {
+		event.preventDefault();
+		dropZone.classList.add("is-dragging");
+	});
+	dropZone?.addEventListener("dragleave", (event) => {
+		if (!dropZone.contains(event.relatedTarget)) {
+			dropZone.classList.remove("is-dragging");
+		}
+	});
+	dropZone?.addEventListener("drop", (event) => {
+		event.preventDefault();
+		dropZone.classList.remove("is-dragging");
+		if (event.dataTransfer.files.length) {
+			fileInput.files = event.dataTransfer.files;
+			updateSelectedFile();
+		}
+	});
 
 	fileInput?.addEventListener("invalid", (event) => {
 		event.preventDefault();
 		showToast("Please choose a file to upload.");
 	}, true);
+
+	uploadForm?.addEventListener("submit", () => {
+		uploadSubmit.disabled = true;
+	});
 
 	const confirmationModal = document.createElement("div");
 	confirmationModal.className = "confirmation-modal";
@@ -113,4 +143,5 @@ document.addEventListener("DOMContentLoaded", () => {
 			openConfirmation(form, filename);
 		});
 	});
+
 });
